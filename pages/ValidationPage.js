@@ -1,25 +1,14 @@
-import {
-  parseJwt,
-  getAccessToken,
-  tokenExpired,
-  refreshAccessToken,
-  getRefreshToken,
-  storeRefreshToken,
-  storeAccessToken,
-  isValidToken,
-  deleteAccessToken,
-  deleteRefreshToken,
-} from '../utils/Library';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { View, Image } from 'react-native';
-import { getValidUser } from '../slices/ValidUserSlice';
-import { getUser } from '../slices/UserSlice';
-import gif from '../assets/images/logo-loader-whitebg.gif';
-import { useResponsiveWidth } from 'react-native-responsive-dimensions';
-import { addPushToken } from '../slices/PushTokenSlice';
-import { registerForPushNotificationsAsync } from '../utils/Library';
 import * as Amplitude from '@amplitude/analytics-react-native';
+import { useEffect, useState } from 'react';
+import { Image, View } from 'react-native';
+import { useResponsiveWidth } from 'react-native-responsive-dimensions';
+import { useDispatch, useSelector } from 'react-redux';
+import gif from '../assets/images/logo-loader-whitebg.gif';
+import { getUser } from '../slices/UserSlice';
+import { getValidUser } from '../slices/ValidUserSlice';
+import {
+  parseJwt
+} from '../utils/Library';
 
 export default function ValidationPage({ navigation }) {
   const dispatch = useDispatch();
@@ -69,6 +58,7 @@ export default function ValidationPage({ navigation }) {
     }
   }, [user.getUserStatus]);
 
+  /*
   useEffect(() => {
     Amplitude.logEvent('VALIDATION_PAGE_OPENED');
     const startUp = async () => {
@@ -112,6 +102,18 @@ export default function ValidationPage({ navigation }) {
     };
     startUp();
   }, []);
+  */
+
+  // TEMP fix to solve broken validation page 
+
+  useEffect(() => {
+    console.log("Bypassing VALIDATE to HOME");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'HOME' }],
+    });
+  }, []);
+  
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>

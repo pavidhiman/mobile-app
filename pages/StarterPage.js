@@ -1,28 +1,26 @@
-import { View, Image, Platform } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { starterPageStyles } from '../styles/StarterPageStyles';
+import * as Amplitude from '@amplitude/analytics-react-native';
+import { exchangeCodeAsync, useAuthRequest } from 'expo-auth-session';
+import { useEffect, useState } from 'react';
+import { Image, View } from 'react-native';
+import { useResponsiveWidth } from 'react-native-responsive-dimensions';
+import { useDispatch, useSelector } from 'react-redux';
+import gif from '../assets/images/logo-loader-whitebg.gif';
+import primsLanding from '../assets/images/PRIMS-landing.png';
+import primsPattern from '../assets/images/PRIMSPattern.png';
+import CustomButton from '../components/CustomButton';
+import config from '../config.json';
 import { useWindowWidth } from '../hooks/useWindowWidth';
-import { useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
+import { getUser } from '../slices/UserSlice';
+import { getValidUser, updatePatientID } from '../slices/ValidUserSlice';
+import { starterPageStyles } from '../styles/StarterPageStyles';
 import {
-  parseJwt,
-  storeAccessToken,
-  storeRefreshToken,
   fetchTokenData,
   generateCodeChallenge,
   generateCodeVerifier,
+  parseJwt,
+  storeAccessToken,
+  storeRefreshToken,
 } from '../utils/Library';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getValidUser, updatePatientID } from '../slices/ValidUserSlice';
-import { updateUserTypeID, getUser } from '../slices/UserSlice';
-import { addPushToken } from '../slices/PushTokenSlice';
-import CustomButton from '../components/CustomButton';
-import primsLanding from '../assets/images/PRIMS-landing.png';
-import primsPattern from '../assets/images/PRIMSPattern.png';
-import config from '../config.json';
-import * as Amplitude from '@amplitude/analytics-react-native';
-import gif from '../assets/images/logo-loader-whitebg.gif';
-import { useResponsiveWidth } from 'react-native-responsive-dimensions';
 
 export default function StarterPage({ navigation, route }) {
   const isLargeScreen = useWindowWidth();
@@ -46,18 +44,29 @@ export default function StarterPage({ navigation, route }) {
   }, [validUser]);
 
   useEffect(() => {
+    // TEMPORARY BYPASS for testing APIs
+    console.log("Bypassing to HOME");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'HOME' }],
+    });
+  
+    /*
+    // ORIGINAL LOGIN FLOW — Uncomment when stable
     if (user.getUserStatus === 'succeeded') {
       if (user.getUserData.userSetupCompleted === 1 && user.getUserData.isEULA === 1) {
         Amplitude.logEvent('EXISTING_USER_LOGGED_IN');
+        
         // UNCOMMENT THE FOLLOWING FOR PRODUCTION
-        // if (expoTokenForStarter?.data) {
-        //   const pushTokenData = {
-        //     UserID: user.getUserData.userID,
-        //     PatientID: validUser.data.patientID,
-        //     PushToken: expoTokenForStarter.data,
-        //   };
-        //   dispatch(addPushToken({ data: pushTokenData }));
-        // }
+        if (expoTokenForStarter?.data) {
+          const pushTokenData = {
+            UserID: user.getUserData.userID,
+            PatientID: validUser.data.patientID,
+            PushToken: expoTokenForStarter.data,
+          };
+          dispatch(addPushToken({ data: pushTokenData }));
+        }
+  
         navigation.reset({
           index: 0,
           routes: [{ name: 'HOME' }],
@@ -66,7 +75,8 @@ export default function StarterPage({ navigation, route }) {
         dispatch(updateUserTypeID({ userID: validUser.data.userID }));
       }
     }
-  }, [user.getUserStatus]);
+    */
+  }, []);  
 
   useEffect(() => {
     if (user.updateUserTypeStatus === 'succeeded') {
