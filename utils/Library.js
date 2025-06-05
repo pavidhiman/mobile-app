@@ -1,14 +1,14 @@
-import { Base64 } from 'js-base64';
-import { Platform } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
-import * as Crypto from 'expo-crypto';
-import jwtDecode from 'jwt-decode';
+import * as Amplitude from '@amplitude/analytics-react-native';
 import axios from 'axios';
+import Constants from 'expo-constants';
+import * as Crypto from 'expo-crypto';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import * as SecureStore from 'expo-secure-store';
+import { Base64 } from 'js-base64';
+import jwtDecode from 'jwt-decode';
+import { Platform } from 'react-native';
 import config from '../config.json';
-import * as Amplitude from '@amplitude/analytics-react-native';
 
 export function tokenExpired(token) {
   try {
@@ -64,6 +64,13 @@ export async function storeAccessToken(accessToken) {
   }
 }
 
+// temp mock for web testing
+export const getAccessToken = async () => {
+  return 'mock-access-token';
+};
+
+/* 
+// comment out when not using web
 export async function getAccessToken() {
   try {
     // change for prod vs dev
@@ -75,6 +82,7 @@ export async function getAccessToken() {
     });
   }
 }
+  */
 
 export async function storeRefreshToken(refreshToken) {
   try {
@@ -90,6 +98,12 @@ export async function storeRefreshToken(refreshToken) {
   }
 }
 
+// temp for web testing
+export const getRefreshToken = async () => {
+  return 'mock-refresh-token';
+};
+
+/*
 export async function getRefreshToken() {
   try {
     // change for prod vs dev
@@ -101,6 +115,7 @@ export async function getRefreshToken() {
     });
   }
 }
+*/
 
 export async function deleteAccessToken() {
   try {

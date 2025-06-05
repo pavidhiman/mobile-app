@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../Api';
 import * as Amplitude from '@amplitude/analytics-react-native';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import api from '../Api';
 
 export const getValidUser = createAsyncThunk('validUser/validateUser', async (args) => {
   const { email } = args;
@@ -34,6 +34,10 @@ const validUserSlice = createSlice({
         state.data.patientID = action.payload;
       }
     },
+    setValidUserMock: (state, action) => {
+      state.status = 'succeeded';
+      state.data = action.payload;
+    }    
   },
   extraReducers: (builder) => {
     builder
@@ -51,5 +55,5 @@ const validUserSlice = createSlice({
   },
 });
 
-export const { updatePatientID } = validUserSlice.actions;
+export const { updatePatientID, setValidUserMock } = validUserSlice.actions;
 export default validUserSlice.reducer;

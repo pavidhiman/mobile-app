@@ -5,7 +5,7 @@ import { useResponsiveWidth } from 'react-native-responsive-dimensions';
 import { useDispatch, useSelector } from 'react-redux';
 import gif from '../assets/images/logo-loader-whitebg.gif';
 import { getUser } from '../slices/UserSlice';
-import { getValidUser } from '../slices/ValidUserSlice';
+import { getValidUser, setValidUserMock } from '../slices/ValidUserSlice';
 import {
   parseJwt
 } from '../utils/Library';
@@ -104,10 +104,14 @@ export default function ValidationPage({ navigation }) {
   }, []);
   */
 
-  // TEMP fix to solve broken validation page 
-
+  // TEMP mock for testing
   useEffect(() => {
-    console.log("Bypassing VALIDATE to HOME");
+    dispatch(setValidUserMock({
+      userID: 123,
+      patientID: 456,
+    }));
+  
+    console.log("Mocked validUser, navigating to HOME");
     navigation.reset({
       index: 0,
       routes: [{ name: 'HOME' }],
