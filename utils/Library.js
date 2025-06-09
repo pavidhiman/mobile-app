@@ -64,12 +64,7 @@ export async function storeAccessToken(accessToken) {
   }
 }
 
-// temp mock for web testing
-export const getAccessToken = async () => {
-  return 'mock-access-token';
-};
 
-/* 
 // comment out when not using web
 export async function getAccessToken() {
   try {
@@ -82,7 +77,6 @@ export async function getAccessToken() {
     });
   }
 }
-  */
 
 export async function storeRefreshToken(refreshToken) {
   try {
@@ -98,12 +92,6 @@ export async function storeRefreshToken(refreshToken) {
   }
 }
 
-// temp for web testing
-export const getRefreshToken = async () => {
-  return 'mock-refresh-token';
-};
-
-/*
 export async function getRefreshToken() {
   try {
     // change for prod vs dev
@@ -115,7 +103,6 @@ export async function getRefreshToken() {
     });
   }
 }
-*/
 
 export async function deleteAccessToken() {
   try {
