@@ -1,24 +1,23 @@
-import { Text, View, Image, Dimensions } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { useResponsiveHeight, useResponsiveWidth, useResponsiveFontSize } from 'react-native-responsive-dimensions';
-import { surveySelectPageStyles } from '../styles/SurveySelectPageStyles';
-import { useWindowWidth } from '../hooks/useWindowWidth';
-import CustomButton from '../components/CustomButton';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { textStyles } from '../styles/textStyles';
-import BottomNavbar from '../components/BottomNavbar';
+import * as Amplitude from '@amplitude/analytics-react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Image, Text, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {
-  getSurveys,
-  getSurveyQuestions,
-  getSurveyAnswers,
-  canCompleteSurvey,
-  resetCanCompleteSurveyState,
-} from '../slices/SurveySlice';
+import { useResponsiveFontSize, useResponsiveHeight, useResponsiveWidth } from 'react-native-responsive-dimensions';
+import { useDispatch, useSelector } from 'react-redux';
 import gif from '../assets/images/logo-loader-whitebg.gif';
 import noticeIcon from '../assets/images/Noticeicon.png';
-import { useFocusEffect } from '@react-navigation/native';
-import * as Amplitude from '@amplitude/analytics-react-native';
+import CustomButton from '../components/CustomButton';
+import { useWindowWidth } from '../hooks/useWindowWidth';
+import {
+  canCompleteSurvey,
+  getSurveyAnswers,
+  getSurveyQuestions,
+  getSurveys,
+  resetCanCompleteSurveyState,
+} from '../slices/SurveySlice';
+import { surveySelectPageStyles } from '../styles/SurveySelectPageStyles';
+import { textStyles } from '../styles/textStyles';
 
 export default function SurveySelectPage({ navigation }) {
   const dispatch = useDispatch();
@@ -33,11 +32,10 @@ export default function SurveySelectPage({ navigation }) {
   const loaderMargin = useResponsiveHeight(25);
 
   useEffect(() => {
-    const startup = async () => {
+    if (validUser.status === 'succeeded' && validUser.data) {
       dispatch(getSurveys({ patientID: validUser.data.patientID }));
-    };
-    startup();
-  }, []);
+    }
+  }, [validUser.status]);
 
   useFocusEffect(
     React.useCallback(() => {

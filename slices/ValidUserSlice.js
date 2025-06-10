@@ -6,7 +6,11 @@ export const getValidUser = createAsyncThunk('validUser/validateUser', async (ar
   const { email } = args;
 
   try {
-    const response = await api.get(`/Patient/ValidateUser/${email}`);
+    // const response = await api.get(`/Patient/ValidateUser/${email}`);
+    const response = await api.get(
+      `/Patient/ValidateUser/${encodeURIComponent(email)}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+      );
     Amplitude.logEvent('VALIDATE_USER_RESPONSE', {
       'response': response.data,
     });
