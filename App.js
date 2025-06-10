@@ -43,6 +43,8 @@ const screensColour = {
 
 const Stack = createStackNavigator();
 
+import * as SecureStore from 'expo-secure-store';
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('VALIDATE');
   const [settingsUnsavedChanges, setSettingsUnsavedChanges] = useState(false);
@@ -54,6 +56,14 @@ export default function App() {
   useEffect(() => {
     Amplitude.init('19a90d04b8be84a32ffb54c9010528ac');
     Amplitude.logEvent('APP_STARTED');
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await SecureStore.deleteItemAsync('access_token_production');
+      await SecureStore.deleteItemAsync('refresh_token_production');
+      console.log('✅ SecureStore cleared (remove temp block)');
+    })();
   }, []);
 
   useEffect(() => {

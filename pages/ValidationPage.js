@@ -1,13 +1,23 @@
 import * as Amplitude from '@amplitude/analytics-react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useResponsiveWidth } from 'react-native-responsive-dimensions';
 import { useDispatch, useSelector } from 'react-redux';
 import gif from '../assets/images/logo-loader-whitebg.gif';
 import { getUser } from '../slices/UserSlice';
-import { getValidUser, setValidUserMock } from '../slices/ValidUserSlice';
+import { getValidUser } from '../slices/ValidUserSlice';
 import {
-  parseJwt
+  deleteAccessToken,
+  deleteRefreshToken,
+  getAccessToken,
+  getRefreshToken,
+  isValidToken,
+  parseJwt,
+  refreshAccessToken,
+  storeAccessToken,
+  storeRefreshToken,
+  tokenExpired,
 } from '../utils/Library';
 
 export default function ValidationPage({ navigation }) {
@@ -33,14 +43,14 @@ export default function ValidationPage({ navigation }) {
       if (user.getUserData.userSetupCompleted === 1 && user.getUserData.isEULA === 1) {
         Amplitude.logEvent('EXISTING_USER_VALIDATED');
         // UNCOMMENT THE FOLLOWING FOR PRODUCTION
-        // if (expoToken?.data) {
-        //   const pushTokenData = {
-        //     UserID: user.getUserData.userID,
-        //     PatientID: validUser.data.patientID,
-        //     PushToken: expoToken.data,
-        //   };
-        //   dispatch(addPushToken({ data: pushTokenData }));
-        // }
+         if (expoToken?.data) {
+           const pushTokenData = {
+             UserID: user.getUserData.userID,
+             PatientID: validUser.data.patientID,
+             PushToken: expoToken.data,
+           };
+           dispatch(addPushToken({ data: pushTokenData }));
+         }
         navigation.reset({
           index: 0,
           routes: [{ name: 'HOME' }],
@@ -58,38 +68,36 @@ export default function ValidationPage({ navigation }) {
     }
   }, [user.getUserStatus]);
 
-  /*
+  
   useEffect(() => {
     Amplitude.logEvent('VALIDATION_PAGE_OPENED');
     const startUp = async () => {
-      // UNCOMMENT THE FOLLOWING FOR PRODUCTION
-      // const pushToken = await registerForPushNotificationsAsync();
-      // Amplitude.logEvent('USER_PUSH_TOKEN_RESULT', {
-      //   'result': pushToken,
-      // });
+      // Optional: Register for push notifications
+      /*
+      const pushToken = await registerForPushNotificationsAsync();
+      Amplitude.logEvent('USER_PUSH_TOKEN_RESULT', { 'result': pushToken });
       setExpoToken(pushToken);
+      */
+  
       const token = await getAccessToken();
       const refreshToken = await getRefreshToken();
       console.log('access token: ', token);
       console.log('refresh token: ', refreshToken);
+  
       if (token && isValidToken(token)) {
         Amplitude.logEvent('TOKEN_EXISTS_AND_IS_VALID');
         if (tokenExpired(token)) {
           Amplitude.logEvent('TOKEN_IS_EXPIRED');
-          // token exists but expired
-          const refreshToken = await getRefreshToken();
           const refreshResult = await refreshAccessToken(refreshToken);
-          if (refreshResult && refreshResult?.access_token && refreshResult?.refresh_token) {
-            const storeAccessTokenResult = await storeAccessToken(refreshResult.access_token);
-            const storeRefreshTokenResult = await storeRefreshToken(refreshResult.refresh_token);
-            if (storeAccessTokenResult && storeRefreshTokenResult) {
-              handleSetup(dispatch, refreshResult.access_token);
-            }
+          if (refreshResult?.access_token && refreshResult?.refresh_token) {
+            await storeAccessToken(refreshResult.access_token);
+            await storeRefreshToken(refreshResult.refresh_token);
+            handleSetup(dispatch, refreshResult.access_token, expoToken, navigation);
           } else {
             Amplitude.logEvent('TOKEN_REFRESH_FAILED');
             await deleteAccessToken();
             await deleteRefreshToken();
-            sendToStarterPage(navigation, expoToken);
+            await runLoginFlow(); // fallback to manual login
           }
         } else {
           Amplitude.logEvent('TOKEN_VALID_AND_NOT_EXPIRED');
@@ -97,13 +105,39 @@ export default function ValidationPage({ navigation }) {
         }
       } else {
         Amplitude.logEvent('TOKEN_NOT_EXISTS_OR_NOT_VALID');
+        await runLoginFlow();
+      }
+    };
+  
+    const runLoginFlow = async () => {
+      const authUrl = `https://pragmaclindevb2c.b2clogin.com/pragmaclindevb2c.onmicrosoft.com/b2c_1_signupsignindev/oauth2/v2.0/authorize?client_id=440fae66-9021-4615-a16f-7ac1f6fd4c6d&response_type=token&redirect_uri=primsapp://auth&scope=https://pragmaclindevb2c.onmicrosoft.com/primsapi/user.access offline_access`;
+  
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, "primsapp://auth");
+  
+      if (result.type === 'success' && result.url) {
+        const params = new URLSearchParams(result.url.split("#")[1]);
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+  
+        if (accessToken) {
+          await storeAccessToken(accessToken);
+          if (refreshToken) await storeRefreshToken(refreshToken);
+          handleSetup(dispatch, accessToken, expoToken, navigation);
+        } else {
+          Amplitude.logEvent('AUTH_TOKEN_MISSING_FROM_URL');
+          sendToStarterPage(navigation, expoToken);
+        }
+      } else {
+        Amplitude.logEvent('LOGIN_CANCELLED_OR_FAILED');
         sendToStarterPage(navigation, expoToken);
       }
     };
+  
     startUp();
   }, []);
-  */
+  
 
+  /*
   // TEMP mock for testing
   useEffect(() => {
     dispatch(setValidUserMock({
@@ -111,13 +145,14 @@ export default function ValidationPage({ navigation }) {
       patientID: 456,
     }));
   
+  
     console.log("Mocked validUser, navigating to HOME");
     navigation.reset({
       index: 0,
       routes: [{ name: 'HOME' }],
     });
   }, []);
-  
+  */
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
