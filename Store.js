@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import validUserReducer from './slices/ValidUserSlice';
-import userReducer from './slices/UserSlice';
-import locationsReducer from './slices/LocationsSlice';
-import conditionsReducer from './slices/ConditionsSlice';
-import settingsReducer from './slices/PatientSettingsSlice';
-import authReducer from './slices/AuthSlice';
-import surveysReducer from './slices/SurveySlice';
 import apptsReducer from './slices/AppointmentsSlice';
-import pushTokenReducer from './slices/PushTokenSlice';
 import assessmentsReducer from './slices/AssessmentSlice';
+import authReducer from './slices/AuthSlice';
+import conditionsReducer from './slices/ConditionsSlice';
+import locationsReducer from './slices/LocationsSlice';
+import settingsReducer from './slices/PatientSettingsSlice';
+import pushTokenReducer from './slices/PushTokenSlice';
+import surveysReducer from './slices/SurveySlice';
+import userReducer from './slices/UserSlice';
+import validUserReducer from './slices/ValidUserSlice';
 
 const appReducer = combineReducers({
   validUser: validUserReducer,

@@ -1,12 +1,14 @@
 import * as Amplitude from '@amplitude/analytics-react-native';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../Api';
+import { getAccessToken } from '../utils/Library';
 
 export const getValidUser = createAsyncThunk('validUser/validateUser', async (args) => {
   const { email } = args;
 
   try {
     // const response = await api.get(`/Patient/ValidateUser/${email}`);
+    const token = await getAccessToken();
     const response = await api.get(
       `/Patient/ValidateUser/${encodeURIComponent(email)}`,
       { headers: { Authorization: `Bearer ${token}` } }
