@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import * as Crypto from 'expo-crypto';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 import { Base64 } from 'js-base64';
 import jwtDecode from 'jwt-decode';
 import { Platform } from 'react-native';

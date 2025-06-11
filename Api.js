@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from './config.json';
-import { tokenExpired, handleTokenRefresh, getAccessToken } from './utils/Library';
+import { getAccessToken, handleTokenRefresh, tokenExpired } from './utils/Library';
 
 const api = axios.create({
   baseURL: config.ROOT_URL,

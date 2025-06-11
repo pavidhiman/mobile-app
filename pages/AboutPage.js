@@ -1,20 +1,20 @@
 // Components
-import { View, Text, Image, ScrollView } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import HorizontalRule from '../components/HorizontalRule';
 
 // Hooks
-import { useResponsiveHeight, useResponsiveWidth, useResponsiveFontSize } from 'react-native-responsive-dimensions';
+import { useResponsiveFontSize, useResponsiveHeight, useResponsiveWidth } from 'react-native-responsive-dimensions';
 
 // Assets
-import primsSystems from '../assets/images/prims-system.png';
+import clinicianInfo from '../assets/images/clinician-info.png';
 import dataCollection from '../assets/images/data-collection.png';
 import patientRatings from '../assets/images/patient-ratings.png';
-import clinicianInfo from '../assets/images/clinician-info.png';
+import primsSystems from '../assets/images/prims-system.png';
 
 // Styles
-import { textStyles } from '../styles/textStyles';
-import { settingsPageStyles } from '../styles/SettingsPageStyles';
 import { useEffect } from 'react';
+import { settingsPageStyles } from '../styles/SettingsPageStyles';
+import { textStyles } from '../styles/textStyles';
 
 import * as Amplitude from '@amplitude/analytics-react-native';
 
