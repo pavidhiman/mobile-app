@@ -1,5 +1,4 @@
 import * as Amplitude from '@amplitude/analytics-react-native';
-import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useResponsiveWidth } from 'react-native-responsive-dimensions';
@@ -110,9 +109,17 @@ export default function ValidationPage({ navigation }) {
     };
   
     const runLoginFlow = async () => {
-      const authUrl = `https://pragmaclindevb2c.b2clogin.com/pragmaclindevb2c.onmicrosoft.com/b2c_1_signupsignindev/oauth2/v2.0/authorize?client_id=440fae66-9021-4615-a16f-7ac1f6fd4c6d&response_type=token&redirect_uri=primsapp://auth&scope=https://pragmaclindevb2c.onmicrosoft.com/primsapi/user.access offline_access`;
+      // const authUrl = `https://pragmaclindevb2c.b2clogin.com/pragmaclindevb2c.onmicrosoft.com/b2c_1_signupsignindev/oauth2/v2.0/authorize?client_id=440fae66-9021-4615-a16f-7ac1f6fd4c6d&response_type=token&redirect_uri=primsapp://auth&scope=https://pragmaclindevb2c.onmicrosoft.com/primsapi/user.access offline_access`;
   
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, "primsapp://auth");
+      
+      const scopes = encodeURIComponent(
+          'https://pragmaclindevb2c.onmicrosoft.com/primsprivilegedapidev/user.access offline_access'
+        );
+        const authUrl = `https://pragmaclindevb2c.b2clogin.com/pragmaclindevb2c.onmicrosoft.com/b2c_1_signupsignindev/oauth2/v2.0/authorize` +
+          `?client_id=440fae66-9021-4615-a16f-7ac1f6fd4c6d` +
+          `&response_type=token` +              
+          `&redirect_uri=primsapp://auth` +
+          `&scope=${scopes}`;
   
       if (result.type === 'success' && result.url) {
         const params = new URLSearchParams(result.url.split("#")[1]);

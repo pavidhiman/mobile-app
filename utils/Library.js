@@ -128,6 +128,8 @@ export async function fetchTokenData(code, codeVerifier) {
   const redirect_uri = 'primsapp://auth';
   const grant_type = 'authorization_code';
   const code_challenge_method = 'S256';
+  const scope = 
+    `${config.CUSTOM_SCOPE} offline_access`;   
 
   const data = new URLSearchParams({
     client_id,
@@ -136,6 +138,7 @@ export async function fetchTokenData(code, codeVerifier) {
     code,
     code_verifier: codeVerifier,
     code_challenge_method,
+    scope,
   });
 
   try {
