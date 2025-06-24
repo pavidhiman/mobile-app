@@ -1,29 +1,24 @@
-import HomePage from './pages/HomePage';
-import StarterPage from './pages/StarterPage';
-import UserSetupPage from './pages/UserSetupPage';
-import SupportPage from './pages/SupportPage';
-import ValidationPage from './pages/ValidationPage';
-import AssessmentHistoryPage from './pages/AssessmentHistoryPage';
-import SettingsPage from './pages/SettingsPage';
-import SurveyHistoryPage from './pages/SurveyHistory';
-import SurveySelectPage from './pages/SurveySelectPage';
-import SurveyPage from './pages/SurveyPage';
-import PrivacyPage from './pages/PrivacyPage';
-import AboutPage from './pages/AboutPage';
-import { useState } from 'react';
-import { View, StatusBar, Platform, SafeAreaView } from 'react-native';
-import { Provider } from 'react-redux';
+import * as Amplitude from '@amplitude/analytics-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import store from './Store';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
-import { useCallback, useEffect, Fragment, useRef } from 'react';
-import BottomNavbar from './components/BottomNavbar';
-import { useWindowWidth } from './hooks/useWindowWidth';
 import * as Notifications from 'expo-notifications';
-import * as Amplitude from '@amplitude/analytics-react-native';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { SafeAreaView, StatusBar, View } from 'react-native';
+import { Provider } from 'react-redux';
+import BottomNavbar from './components/BottomNavbar';
+import AboutPage from './pages/AboutPage';
+import HomePage from './pages/HomePage';
+import PrivacyPage from './pages/PrivacyPage';
+import SettingsPage from './pages/SettingsPage';
+import StarterPage from './pages/StarterPage';
+import SupportPage from './pages/SupportPage';
+import SurveyHistoryPage from './pages/SurveyHistory';
+import SurveyPage from './pages/SurveyPage';
+import SurveySelectPage from './pages/SurveySelectPage';
+import UserSetupPage from './pages/UserSetupPage';
+import ValidationPage from './pages/ValidationPage';
+import store from './Store';
 
 const screensColour = {
   HOME: 'white',
@@ -43,7 +38,6 @@ const screensColour = {
 
 const Stack = createStackNavigator();
 
-import * as SecureStore from 'expo-secure-store';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('VALIDATE');
@@ -60,8 +54,8 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      await SecureStore.deleteItemAsync('access_token_production');
-      await SecureStore.deleteItemAsync('refresh_token_production');
+      // await SecureStore.deleteItemAsync('access_token_production');
+      // await SecureStore.deleteItemAsync('refresh_token_production');
       console.log('✅ SecureStore cleared (remove temp block)');
     })();
   }, []);
