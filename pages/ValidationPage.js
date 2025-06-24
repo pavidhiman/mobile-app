@@ -1,4 +1,5 @@
 import * as Amplitude from '@amplitude/analytics-react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useResponsiveWidth } from 'react-native-responsive-dimensions';
@@ -120,6 +121,13 @@ export default function ValidationPage({ navigation }) {
           `&response_type=token` +              
           `&redirect_uri=primsapp://auth` +
           `&scope=${scopes}`;
+        
+          console.log('opening Azure B2C');
+          const result = await WebBrowser.openAuthSessionAsync(
+            authUrl,
+            'primsapp://auth'
+          );
+          console.log('browser result →', result);
   
       if (result.type === 'success' && result.url) {
         const params = new URLSearchParams(result.url.split("#")[1]);

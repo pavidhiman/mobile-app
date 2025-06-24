@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import * as Notifications from 'expo-notifications';
+import * as WebBrowser from 'expo-web-browser';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, StatusBar, View } from 'react-native';
 import { Provider } from 'react-redux';
@@ -19,6 +20,8 @@ import SurveySelectPage from './pages/SurveySelectPage';
 import UserSetupPage from './pages/UserSetupPage';
 import ValidationPage from './pages/ValidationPage';
 import store from './Store';
+
+WebBrowser.maybeCompleteAuthSession();
 
 const screensColour = {
   HOME: 'white',
@@ -54,9 +57,9 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      // await SecureStore.deleteItemAsync('access_token_production');
-      // await SecureStore.deleteItemAsync('refresh_token_production');
-      console.log('✅ SecureStore cleared (remove temp block)');
+       await SecureStore.deleteItemAsync('access_token_production');
+       await SecureStore.deleteItemAsync('refresh_token_production');
+      console.log('tokens wiped');
     })();
   }, []);
 
