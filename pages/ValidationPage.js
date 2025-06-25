@@ -5,6 +5,7 @@ import { Image, View } from 'react-native';
 import { useResponsiveWidth } from 'react-native-responsive-dimensions';
 import { useDispatch, useSelector } from 'react-redux';
 import gif from '../assets/images/logo-loader-whitebg.gif';
+import { DEBUG_BYPASS_AUTH } from '../config.debug';
 import { getUser } from '../slices/UserSlice';
 import { getValidUser } from '../slices/ValidUserSlice';
 import {
@@ -71,6 +72,11 @@ export default function ValidationPage({ navigation }) {
   
   useEffect(() => {
     Amplitude.logEvent('VALIDATION_PAGE_OPENED');
+    if (DEBUG_BYPASS_AUTH) { // DEBUGGING
+      console.log('DEV-BYPASS: sending straight to STARTER screen');
+      sendToStarterPage(navigation, null);
+      return;             // stop the normal auth flow
+    }
     const startUp = async () => {
       // Optional: Register for push notifications
       /*
