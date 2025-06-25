@@ -1,0 +1,1 @@
+export const DEBUG_BYPASS_AUTH = true; // change to false when scopes are fixed 

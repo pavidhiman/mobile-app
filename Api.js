@@ -22,6 +22,33 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+// debugging to find all 401 errors
+api.interceptors.response.use(
+  (response) => response,
+
+  (error) => {
+    if (error.response?.status === 401) {
+      const { method, url } = error.config;
+      console.log(`[401] ${method.toUpperCase()} ${url}`);
+
+      console.log('    WWW-Authenticate:', error.response.headers['www-authenticate'] ?? '-');
+    }
+
+    if (url.includes('/Patient/ValidateUser')) {
+      console.log('→ mock 200 /ValidateUser');
+      return Promise.resolve({ status: 200, data: { userID: 1, patientID: 2 } });
+    }
+    
+    if (url.includes('/Patient/SaveEULA')) {
+      console.log('→ mock 200 /SaveEULA');
+      return Promise.resolve({ status: 200, data: {} });
+    }    
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;
 
 
