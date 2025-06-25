@@ -25,29 +25,27 @@ api.interceptors.request.use(
 
 // debugging to find all 401 errors
 api.interceptors.response.use(
-  (response) => response,
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401 && DEBUG_BYPASS_AUTH) {
+      const { method, url } = err.config;
+      console.log(`[401-mock] ${method.toUpperCase()} ${url}`);
 
-  (error) => {
-    if (error.response?.status === 401) {
-      const { method, url } = error.config;
-      console.log(`[401] ${method.toUpperCase()} ${url}`);
-
-      console.log('    WWW-Authenticate:', error.response.headers['www-authenticate'] ?? '-');
+      // very small stubs – shape them per endpoint you hit
+      if (url.includes('/Patient/ValidateUser')) {
+        return Promise.resolve({ status: 200, data: { userID: 1, patientID: 99 } });
+      }
+      if (url.includes('/Patient/SaveEULA')) {
+        return Promise.resolve({ status: 200, data: {} });
+      }
+      if (url.includes('/Survey')) {
+        return Promise.resolve({ status: 200, data: { surveys: [] } });
+      }
     }
-
-    if (url.includes('/Patient/ValidateUser')) {
-      console.log('→ mock 200 /ValidateUser');
-      return Promise.resolve({ status: 200, data: { userID: 1, patientID: 2 } });
-    }
-    
-    if (url.includes('/Patient/SaveEULA')) {
-      console.log('→ mock 200 /SaveEULA');
-      return Promise.resolve({ status: 200, data: {} });
-    }    
-
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
+
 
 export default api;
 
