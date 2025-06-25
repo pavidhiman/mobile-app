@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { DEBUG_BYPASS_AUTH } from './config.debug';
 import config from './config.json';
 import { getAccessToken, handleTokenRefresh, tokenExpired } from './utils/Library';
 
@@ -37,9 +38,6 @@ api.interceptors.response.use(
       }
       if (url.includes('/Patient/SaveEULA')) {
         return Promise.resolve({ status: 200, data: {} });
-      }
-      if (url.includes('/Survey')) {
-        return Promise.resolve({ status: 200, data: { surveys: [] } });
       }
     }
     return Promise.reject(err);

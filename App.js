@@ -57,8 +57,8 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-       await SecureStore.deleteItemAsync('access_token_production');
-       await SecureStore.deleteItemAsync('refresh_token_production');
+       // await SecureStore.deleteItemAsync('access_token_production');
+       // await SecureStore.deleteItemAsync('refresh_token_production');
       console.log('tokens wiped');
     })();
   }, []);
